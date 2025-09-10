@@ -1,5 +1,7 @@
-import { type Camera, type InsertCamera, type DiscoveredDevice, type InsertDiscoveredDevice, type SystemStats, type InsertSystemStats } from "@shared/schema";
+import { type Camera, type InsertCamera, type DiscoveredDevice, type InsertDiscoveredDevice, type SystemStats, type InsertSystemStats, cameras, discoveredDevices, systemStats } from "@shared/schema";
 import { randomUUID } from "crypto";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 
 export interface IStorage {
   // Camera operations
@@ -333,4 +335,163 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+export class DatabaseStorage implements IStorage {
+  async getCameras(): Promise<Camera[]> {
+    return await db.select().from(cameras);
+  }
+
+  async getCamera(id: string): Promise<Camera | undefined> {
+    const [camera] = await db.select().from(cameras).where(eq(cameras.id, id));
+    return camera || undefined;
+  }
+
+  async createCamera(insertCamera: InsertCamera): Promise<Camera> {
+    const [camera] = await db
+      .insert(cameras)
+      .values(insertCamera)
+      .returning();
+    return camera;
+  }
+
+  async updateCamera(id: string, updateData: Partial<InsertCamera>): Promise<Camera | undefined> {
+    const [camera] = await db
+      .update(cameras)
+      .set({ ...updateData, lastSeen: new Date() })
+      .where(eq(cameras.id, id))
+      .returning();
+    return camera || undefined;
+  }
+
+  async deleteCamera(id: string): Promise<boolean> {
+    const rows = await db
+      .delete(cameras)
+      .where(eq(cameras.id, id))
+      .returning();
+    return rows.length > 0;
+  }
+
+  async getDiscoveredDevices(): Promise<DiscoveredDevice[]> {
+    return await db.select().from(discoveredDevices);
+  }
+
+  async getDiscoveredDevice(id: string): Promise<DiscoveredDevice | undefined> {
+    const [device] = await db.select().from(discoveredDevices).where(eq(discoveredDevices.id, id));
+    return device || undefined;
+  }
+
+  async createDiscoveredDevice(insertDevice: InsertDiscoveredDevice): Promise<DiscoveredDevice> {
+    const [device] = await db
+      .insert(discoveredDevices)
+      .values(insertDevice)
+      .returning();
+    return device;
+  }
+
+  async updateDiscoveredDevice(id: string, updateData: Partial<InsertDiscoveredDevice>): Promise<DiscoveredDevice | undefined> {
+    const [device] = await db
+      .update(discoveredDevices)
+      .set({ ...updateData, lastSeen: new Date() })
+      .where(eq(discoveredDevices.id, id))
+      .returning();
+    return device || undefined;
+  }
+
+  async deleteDiscoveredDevice(id: string): Promise<boolean> {
+    const rows = await db
+      .delete(discoveredDevices)
+      .where(eq(discoveredDevices.id, id))
+      .returning();
+    return rows.length > 0;
+  }
+
+  async getSystemStats(): Promise<SystemStats | undefined> {
+    // First try to get existing stats
+    const [existing] = await db.select().from(systemStats).limit(1);
+    
+    if (existing) {
+      // Calculate dynamic stats based on actual data
+      const allCameras = await this.getCameras();
+      const allDevices = await this.getDiscoveredDevices();
+      
+      const totalCameras = allCameras.length;
+      const activeCameras = allCameras.filter(c => c.status === "online").length;
+      const offlineCameras = allCameras.filter(c => c.status === "offline").length;
+      const recordingCameras = allCameras.filter(c => c.isRecording && c.status === "online").length;
+      const discoveredDevicesCount = allDevices.length;
+      const connectedDevices = allDevices.filter(d => d.connectionStatus === "connected").length;
+      const failedConnections = allDevices.filter(d => d.connectionStatus === "failed").length;
+      
+      // Update with calculated values
+      const [updatedStats] = await db
+        .update(systemStats)
+        .set({
+          totalCameras,
+          activeCameras,
+          offlineCameras,
+          recordingCameras,
+          discoveredDevices: discoveredDevicesCount,
+          connectedDevices,
+          failedConnections,
+          bandwidthUsage: Math.round((activeCameras / Math.max(totalCameras, 1)) * 100),
+          updatedAt: new Date()
+        })
+        .where(eq(systemStats.id, existing.id))
+        .returning();
+      
+      return updatedStats;
+    } else {
+      // Create initial stats
+      const allCameras = await this.getCameras();
+      const allDevices = await this.getDiscoveredDevices();
+      
+      const [newStats] = await db
+        .insert(systemStats)
+        .values({
+          totalCameras: allCameras.length,
+          activeCameras: allCameras.filter(c => c.status === "online").length,
+          offlineCameras: allCameras.filter(c => c.status === "offline").length,
+          recordingCameras: allCameras.filter(c => c.isRecording && c.status === "online").length,
+          discoveredDevices: allDevices.length,
+          connectedDevices: allDevices.filter(d => d.connectionStatus === "connected").length,
+          failedConnections: allDevices.filter(d => d.connectionStatus === "failed").length,
+          scanProgress: 85,
+          bandwidthUsage: allCameras.length > 0 ? Math.round((allCameras.filter(c => c.status === "online").length / allCameras.length) * 100) : 0
+        })
+        .returning();
+      
+      return newStats;
+    }
+  }
+
+  async updateSystemStats(updateData: Partial<InsertSystemStats>): Promise<SystemStats> {
+    const [existing] = await db.select().from(systemStats).limit(1);
+    
+    if (existing) {
+      const [updatedStats] = await db
+        .update(systemStats)
+        .set({ ...updateData, updatedAt: new Date() })
+        .where(eq(systemStats.id, existing.id))
+        .returning();
+      return updatedStats;
+    } else {
+      const [newStats] = await db
+        .insert(systemStats)
+        .values({
+          totalCameras: 0,
+          activeCameras: 0,
+          offlineCameras: 0,
+          recordingCameras: 0,
+          discoveredDevices: 0,
+          connectedDevices: 0,
+          failedConnections: 0,
+          scanProgress: 0,
+          bandwidthUsage: 0,
+          ...updateData
+        })
+        .returning();
+      return newStats;
+    }
+  }
+}
+
+export const storage = new DatabaseStorage();
