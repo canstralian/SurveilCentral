@@ -9,9 +9,18 @@ interface CameraGridProps {
 }
 
 export default function CameraGrid({ cameras, gridLayout, isLoading }: CameraGridProps) {
+  const getGridClasses = (layout: "2x2" | "3x3" | "4x4") => {
+    switch (layout) {
+      case "2x2": return "grid-cols-2";
+      case "3x3": return "grid-cols-3";
+      case "4x4": return "grid-cols-4";
+      default: return "grid-cols-3";
+    }
+  };
+
   if (isLoading) {
     return (
-      <div className={`grid gap-4 mb-6 grid-${gridLayout}`}>
+      <div className={`grid gap-4 mb-6 ${getGridClasses(gridLayout)}`}>
         {[...Array(9)].map((_, i) => (
           <Skeleton key={i} className="aspect-video rounded-lg" />
         ))}
@@ -23,7 +32,7 @@ export default function CameraGrid({ cameras, gridLayout, isLoading }: CameraGri
   const visibleCameras = cameras.slice(0, gridSize);
 
   return (
-    <div className={`grid gap-4 mb-6 grid-${gridLayout}`} data-testid="camera-grid">
+    <div className={`grid gap-4 mb-6 ${getGridClasses(gridLayout)}`} data-testid="camera-grid">
       {visibleCameras.map((camera) => (
         <CameraFeed key={camera.id} camera={camera} />
       ))}
@@ -33,7 +42,7 @@ export default function CameraGrid({ cameras, gridLayout, isLoading }: CameraGri
         [...Array(gridSize - visibleCameras.length)].map((_, i) => (
           <div 
             key={`empty-${i}`} 
-            className="camera-feed bg-muted rounded-lg border-2 border-dashed border-border flex items-center justify-center"
+            className="camera-feed bg-muted rounded-lg border-2 border-dashed border-border flex items-center justify-center aspect-video"
             data-testid={`empty-slot-${i}`}
           >
             <div className="text-center text-muted-foreground">
