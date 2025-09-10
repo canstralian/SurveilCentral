@@ -3,19 +3,22 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertCameraSchema, insertDiscoveredDeviceSchema, insertSystemStatsSchema } from "@shared/schema";
 import { z } from "zod";
+import { validateUUID } from "./middleware/security";
+import { cacheMiddleware, invalidateCache } from "./middleware/cache";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Camera routes
-  app.get("/api/cameras", async (req, res) => {
+  app.get("/api/cameras", cacheMiddleware(10000), async (req, res) => {
     try {
       const cameras = await storage.getCameras();
       res.json(cameras);
     } catch (error) {
+      console.error('Error fetching cameras:', error);
       res.status(500).json({ message: "Failed to fetch cameras" });
     }
   });
 
-  app.get("/api/cameras/:id", async (req, res) => {
+  app.get("/api/cameras/:id", validateUUID('id'), cacheMiddleware(10000), async (req, res) => {
     try {
       const camera = await storage.getCamera(req.params.id);
       if (!camera) {
@@ -23,6 +26,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       res.json(camera);
     } catch (error) {
+      console.error('Error fetching camera:', error);
       res.status(500).json({ message: "Failed to fetch camera" });
     }
   });
@@ -31,16 +35,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const validatedData = insertCameraSchema.parse(req.body);
       const camera = await storage.createCamera(validatedData);
+      // Invalidate camera cache after creation
+      invalidateCache('/api/cameras');
       res.status(201).json(camera);
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid camera data", errors: error.errors });
       }
+      console.error('Error creating camera:', error);
       res.status(500).json({ message: "Failed to create camera" });
     }
   });
 
-  app.patch("/api/cameras/:id", async (req, res) => {
+  app.patch("/api/cameras/:id", validateUUID('id'), async (req, res) => {
     try {
       const partialSchema = insertCameraSchema.partial();
       const validatedData = partialSchema.parse(req.body);
@@ -48,23 +55,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!camera) {
         return res.status(404).json({ message: "Camera not found" });
       }
+      // Invalidate specific camera and list cache
+      invalidateCache(`/api/cameras`);
       res.json(camera);
     } catch (error) {
       if (error instanceof z.ZodError) {
         return res.status(400).json({ message: "Invalid camera data", errors: error.errors });
       }
+      console.error('Error updating camera:', error);
       res.status(500).json({ message: "Failed to update camera" });
     }
   });
 
-  app.delete("/api/cameras/:id", async (req, res) => {
+  app.delete("/api/cameras/:id", validateUUID('id'), async (req, res) => {
     try {
       const success = await storage.deleteCamera(req.params.id);
       if (!success) {
         return res.status(404).json({ message: "Camera not found" });
       }
+      // Invalidate all camera-related caches
+      invalidateCache('/api/cameras');
+      invalidateCache('/api/system-stats');
       res.status(204).send();
     } catch (error) {
+      console.error('Error deleting camera:', error);
       res.status(500).json({ message: "Failed to delete camera" });
     }
   });
