@@ -35,7 +35,7 @@ export default function Header({ systemStats }: HeaderProps) {
         </div>
         
         <div className="flex items-center space-x-2 md:space-x-6">
-          <div className="hidden sm:flex items-center space-x-2">
+          <div className="flex items-center space-x-2">
             <div className="w-2 h-2 bg-success rounded-full status-indicator"></div>
             <span className="text-xs md:text-sm" data-testid="text-system-status">
               <span className="hidden md:inline">System </span>Online
