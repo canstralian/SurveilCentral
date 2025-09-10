@@ -26,41 +26,48 @@ interface SidebarProps {
 
 export default function Sidebar({ systemStats }: SidebarProps) {
   return (
-    <SidebarPrimitive className="w-full md:w-64">
-      <SidebarHeader className="p-4 md:p-6">
-        <h2 className="text-lg font-semibold">CCTV Dashboard</h2>
+    <SidebarPrimitive className="w-full md:w-64 sidebar-nav">
+      <SidebarHeader className="p-4 md:p-6 relative">
+        <div className="absolute inset-0 bg-white/5 backdrop-blur-sm"></div>
+        <h2 className="text-lg font-bold relative z-10 gradient-text bg-white text-white drop-shadow-sm">CCTV Dashboard</h2>
       </SidebarHeader>
       
-      <SidebarContent>
+      <SidebarContent className="px-2">
         <SidebarGroup>
-          <SidebarMenu>
+          <SidebarMenu className="space-y-2">
             <SidebarMenuItem>
               <SidebarMenuButton 
-                className="min-h-[48px] bg-white/10 text-white hover:bg-white/20"
+                className="min-h-[52px] bg-white/15 text-white hover:bg-white/25 rounded-xl mx-2 backdrop-blur-sm transition-all duration-300 group"
                 data-testid="link-live-monitoring"
               >
-                <Video className="w-5 h-5" />
-                <span>Live Monitoring</span>
+                <div className="p-2 bg-white/20 rounded-lg group-hover:bg-white/30 transition-colors">
+                  <Video className="w-5 h-5" />
+                </div>
+                <span className="font-medium drop-shadow-sm">Live Monitoring</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             
             <SidebarMenuItem>
               <SidebarMenuButton 
-                className="min-h-[48px] hover:bg-white/10 transition-colors"
+                className="min-h-[52px] hover:bg-white/15 transition-all duration-300 rounded-xl mx-2 backdrop-blur-sm group text-white/90 hover:text-white"
                 data-testid="link-network-discovery"
               >
-                <Network className="w-5 h-5" />
-                <span>Network Discovery</span>
+                <div className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors">
+                  <Network className="w-5 h-5" />
+                </div>
+                <span className="font-medium drop-shadow-sm">Network Discovery</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             
             <SidebarMenuItem>
               <SidebarMenuButton 
-                className="min-h-[48px] hover:bg-white/10 transition-colors"
+                className="min-h-[52px] hover:bg-white/15 transition-all duration-300 rounded-xl mx-2 backdrop-blur-sm group text-white/90 hover:text-white"
                 data-testid="link-camera-management"
               >
-                <Settings className="w-5 h-5" />
-                <span>Camera Management</span>
+                <div className="p-2 bg-white/10 rounded-lg group-hover:bg-white/20 transition-colors">
+                  <Settings className="w-5 h-5" />
+                </div>
+                <span className="font-medium drop-shadow-sm">Camera Management</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
             

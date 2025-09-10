@@ -25,11 +25,13 @@ export default function Dashboard() {
   const isLoading = camerasLoading || statsLoading || devicesLoading;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
       <Header systemStats={systemStats} />
 
-      <div className="flex h-screen">
-        <Sidebar systemStats={systemStats} />
+      <div className="flex min-h-screen">
+        <div className="hidden md:block">
+          <Sidebar systemStats={systemStats} />
+        </div>
 
         <main className="flex-1 p-3 md:p-6 overflow-auto">
           {/* Control Panel */}
