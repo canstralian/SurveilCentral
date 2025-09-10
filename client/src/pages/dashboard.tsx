@@ -5,7 +5,6 @@ import Sidebar from "@/components/sidebar";
 import CameraGrid from "@/components/camera-grid";
 import NetworkDiscovery from "@/components/network-discovery";
 import CameraManagement from "@/components/camera-management";
-import MobileNavigation from "@/components/mobile-navigation";
 import type { Camera, SystemStats, DiscoveredDevice } from "@shared/schema";
 
 export default function Dashboard() {
@@ -156,8 +155,6 @@ export default function Dashboard() {
           <CameraManagement cameras={cameras} isLoading={camerasLoading} />
         </main>
       </div>
-      {/* Mobile Navigation - Added for mobile-first approach */}
-      <MobileNavigation />
     </div>
   );
 }

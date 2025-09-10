@@ -275,6 +275,33 @@ export class MemStorage implements IStorage {
   }
 
   async getSystemStats(): Promise<SystemStats | undefined> {
+    // Calculate stats dynamically based on actual data
+    const cameras = Array.from(this.cameras.values());
+    const devices = Array.from(this.discoveredDevices.values());
+    
+    const totalCameras = cameras.length;
+    const activeCameras = cameras.filter(c => c.status === "online").length;
+    const offlineCameras = cameras.filter(c => c.status === "offline").length;
+    const recordingCameras = cameras.filter(c => c.isRecording && c.status === "online").length;
+    const discoveredDevices = devices.length;
+    const connectedDevices = devices.filter(d => d.connectionStatus === "connected").length;
+    const failedConnections = devices.filter(d => d.connectionStatus === "failed").length;
+    
+    // Update system stats with calculated values
+    this.systemStats = {
+      id: this.systemStats?.id || randomUUID(),
+      totalCameras,
+      activeCameras,
+      offlineCameras,
+      recordingCameras,
+      discoveredDevices,
+      connectedDevices,
+      failedConnections,
+      scanProgress: this.systemStats?.scanProgress || 85, // Keep user-controlled values
+      bandwidthUsage: Math.round((activeCameras / Math.max(totalCameras, 1)) * 100), // Calculate based on active cameras
+      updatedAt: new Date()
+    };
+
     return this.systemStats;
   }
 
