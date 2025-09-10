@@ -1,4 +1,24 @@
+
+import React from "react";
 import type { SystemStats } from "@shared/schema";
+import { 
+  Sidebar as SidebarPrimitive,
+  SidebarContent,
+  SidebarGroup,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarFooter,
+  SidebarHeader
+} from "./ui/sidebar";
+import { 
+  Monitor, 
+  Network, 
+  Settings, 
+  BarChart3, 
+  AlertTriangle,
+  Video
+} from "lucide-react";
 
 interface SidebarProps {
   systemStats?: SystemStats;
@@ -6,93 +26,112 @@ interface SidebarProps {
 
 export default function Sidebar({ systemStats }: SidebarProps) {
   return (
-    <aside className="w-full md:w-64 sidebar-nav text-primary-foreground p-4 md:p-6">
-      <nav className="space-y-2">
-        <a 
-          href="#" 
-          className="flex items-center space-x-3 p-4 md:p-3 rounded-lg bg-white/10 text-white min-h-[48px] touch-manipulation"
-          data-testid="link-live-monitoring"
-        >
-          <i className="fas fa-video w-5 text-lg md:text-base"></i>
-          <span className="text-base md:text-sm">Live Monitoring</span>
-        </a>
-        <a 
-          href="#" 
-          className="flex items-center space-x-3 p-4 md:p-3 rounded-lg hover:bg-white/10 transition-colors min-h-[48px] touch-manipulation"
-          data-testid="link-network-discovery"
-        >
-          <i className="fas fa-network-wired w-5 text-lg md:text-base"></i>
-          <span className="text-base md:text-sm">Network Discovery</span>
-        </a>
-        <a 
-          href="#" 
-          className="flex items-center space-x-3 p-4 md:p-3 rounded-lg hover:bg-white/10 transition-colors min-h-[48px] touch-manipulation"
-          data-testid="link-camera-management"
-        >
-          <i className="fas fa-cogs w-5 text-lg md:text-base"></i>
-          <span className="text-base md:text-sm">Camera Management</span>
-        </a>
-        <a 
-          href="#" 
-          className="flex items-center space-x-3 p-4 md:p-3 rounded-lg hover:bg-white/10 transition-colors min-h-[48px] touch-manipulation"
-          data-testid="link-analytics"
-        >
-          <i className="fas fa-chart-line w-5 text-lg md:text-base"></i>
-          <span className="text-base md:text-sm">Analytics</span>
-        </a>
-        <a 
-          href="#" 
-          className="flex items-center space-x-3 p-4 md:p-3 rounded-lg hover:bg-white/10 transition-colors min-h-[48px] touch-manipulation"
-          data-testid="link-alerts"
-        >
-          <i className="fas fa-exclamation-triangle w-5 text-lg md:text-base"></i>
-          <span className="text-base md:text-sm">Alerts</span>
-        </a>
-      </nav>
+    <SidebarPrimitive className="w-full md:w-64">
+      <SidebarHeader className="p-4 md:p-6">
+        <h2 className="text-lg font-semibold">CCTV Dashboard</h2>
+      </SidebarHeader>
+      
+      <SidebarContent>
+        <SidebarGroup>
+          <SidebarMenu>
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                className="min-h-[48px] bg-white/10 text-white hover:bg-white/20"
+                data-testid="link-live-monitoring"
+              >
+                <Video className="w-5 h-5" />
+                <span>Live Monitoring</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                className="min-h-[48px] hover:bg-white/10 transition-colors"
+                data-testid="link-network-discovery"
+              >
+                <Network className="w-5 h-5" />
+                <span>Network Discovery</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                className="min-h-[48px] hover:bg-white/10 transition-colors"
+                data-testid="link-camera-management"
+              >
+                <Settings className="w-5 h-5" />
+                <span>Camera Management</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                className="min-h-[48px] hover:bg-white/10 transition-colors"
+                data-testid="link-analytics"
+              >
+                <BarChart3 className="w-5 h-5" />
+                <span>Analytics</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            
+            <SidebarMenuItem>
+              <SidebarMenuButton 
+                className="min-h-[48px] hover:bg-white/10 transition-colors"
+                data-testid="link-alerts"
+              >
+                <AlertTriangle className="w-5 h-5" />
+                <span>Alerts</span>
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+          </SidebarMenu>
+        </SidebarGroup>
+      </SidebarContent>
 
-      {/* Camera Status Summary */}
-      <div className="mt-8 p-4 bg-white/10 rounded-lg">
-        <h3 className="font-semibold mb-3">System Status</h3>
-        <div className="space-y-2 text-sm">
-          <div className="flex justify-between">
-            <span>Active Cameras:</span>
-            <span data-testid="text-active-cameras">
-              {systemStats?.activeCameras || 0}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Offline Cameras:</span>
-            <span className="text-alert" data-testid="text-offline-cameras">
-              {systemStats?.offlineCameras || 0}
-            </span>
-          </div>
-          <div className="flex justify-between">
-            <span>Recording:</span>
-            <span data-testid="text-recording-cameras">
-              {systemStats?.recordingCameras || 0}
-            </span>
+      <SidebarFooter className="p-4">
+        {/* Camera Status Summary */}
+        <div className="p-4 bg-white/10 rounded-lg">
+          <h3 className="font-semibold mb-3">System Status</h3>
+          <div className="space-y-2 text-sm">
+            <div className="flex justify-between">
+              <span>Active Cameras:</span>
+              <span data-testid="text-active-cameras">
+                {systemStats?.activeCameras || 0}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span>Offline Cameras:</span>
+              <span className="text-red-400" data-testid="text-offline-cameras">
+                {systemStats?.offlineCameras || 0}
+              </span>
+            </div>
+            <div className="flex justify-between">
+              <span>Recording:</span>
+              <span data-testid="text-recording-cameras">
+                {systemStats?.recordingCameras || 0}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Network Health */}
-      <div className="mt-4 p-4 bg-white/10 rounded-lg">
-        <h3 className="font-semibold mb-3">Network Health</h3>
-        <div className="space-y-2">
-          <div className="flex items-center justify-between text-sm">
-            <span>Bandwidth Usage:</span>
-            <span data-testid="text-bandwidth-usage">
-              {systemStats?.bandwidthUsage || 0}%
-            </span>
-          </div>
-          <div className="w-full bg-white/20 rounded-full h-2">
-            <div 
-              className="bg-white h-2 rounded-full transition-all duration-500" 
-              style={{ width: `${systemStats?.bandwidthUsage || 0}%` }}
-            ></div>
+        {/* Network Health */}
+        <div className="mt-4 p-4 bg-white/10 rounded-lg">
+          <h3 className="font-semibold mb-3">Network Health</h3>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span>Bandwidth Usage:</span>
+              <span data-testid="text-bandwidth-usage">
+                {systemStats?.bandwidthUsage || 0}%
+              </span>
+            </div>
+            <div className="w-full bg-white/20 rounded-full h-2">
+              <div 
+                className="bg-white h-2 rounded-full transition-all duration-500" 
+                style={{ width: `${systemStats?.bandwidthUsage || 0}%` }}
+              />
+            </div>
           </div>
         </div>
-      </div>
-    </aside>
+      </SidebarFooter>
+    </SidebarPrimitive>
   );
 }
