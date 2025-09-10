@@ -1,0 +1,300 @@
+# CCTV Operations Dashboard Development Prompt
+
+## System Architecture Overview
+
+Create a comprehensive CCTV Operations Dashboard that combines active network camera discovery with centralized monitoring capabilities. The system should provide automated detection of Wi-Fi enabled cameras and establish secure connections for authorized surveillance operations.
+
+## Technical Specifications
+
+### Backend Infrastructure (Flask/Python)
+
+```python
+# Core system architecture requirements
+class CCTVDashboardSystem:
+    """
+    Comprehensive CCTV management system with network discovery capabilities
+    """
+    def __init__(self):
+        self.camera_discovery = NetworkCameraScanner()
+        self.connection_manager = CameraConnectionManager()
+        self.dashboard_api = DashboardAPI()
+        self.security_layer = AuthenticationManager()
+```
+
+### Frontend Framework (React/JavaScript)
+
+- Real-time camera feed display grid
+- Interactive network topology visualization
+- Camera configuration management interface
+- Alert and notification system
+- Multi-user access control dashboard
+
+## Core Functionality Requirements
+
+### 1. Network Camera Discovery Engine
+
+#### Automated Scanning Protocols
+
+- **ONVIF Device Discovery**: Implement WS-Discovery protocol for ONVIF-compliant cameras
+- **UPnP/SSDP Scanning**: Universal Plug and Play device enumeration
+- **RTSP Stream Detection**: Real-Time Streaming Protocol endpoint identification
+- **HTTP Camera Scanning**: Web-based camera interface detection
+- **Manufacturer-Specific Protocols**: Support for proprietary camera APIs
+
+#### Implementation Strategy
+
+```python
+class NetworkCameraScanner:
+    """Advanced camera discovery with multi-protocol support"""
+    
+    def comprehensive_scan(self, network_range):
+        """Execute multi-vector camera detection"""
+        discovered_devices = []
+        
+        # ONVIF WS-Discovery
+        onvif_cameras = self.onvif_discovery(network_range)
+        
+        # UPnP/SSDP enumeration
+        upnp_devices = self.upnp_discovery()
+        
+        # RTSP endpoint probing
+        rtsp_streams = self.rtsp_scan(network_range)
+        
+        # HTTP camera detection
+        http_cameras = self.http_camera_scan(network_range)
+        
+        return self.correlate_discoveries(onvif_cameras, upnp_devices, 
+                                        rtsp_streams, http_cameras)
+```
+
+### 2. Camera Connection Management
+
+#### Protocol Support Matrix
+
+- **RTSP/RTP**: Primary streaming protocol implementation
+- **ONVIF**: Standardized camera control and configuration
+- **HTTP/HTTPS**: Web-based camera interfaces
+- **WebRTC**: Low-latency streaming capabilities
+- **Custom Protocols**: Manufacturer-specific implementations
+
+#### Authentication Framework
+
+```python
+class CameraConnectionManager:
+    """Secure camera connection and authentication handler"""
+    
+    def establish_connection(self, camera_device):
+        """Multi-protocol connection establishment"""
+        auth_methods = [
+            self.digest_authentication,
+            self.basic_authentication,
+            self.token_based_auth,
+            self.certificate_auth
+        ]
+        
+        for auth_method in auth_methods:
+            if connection := auth_method(camera_device):
+                return self.secure_stream_handler(connection)
+        
+        return None
+```
+
+### 3. Dashboard Interface Components
+
+#### Real-Time Monitoring Grid
+
+- Multi-camera simultaneous display
+- Customizable grid layouts (2x2, 3x3, 4x4, custom)
+- Full-screen individual camera view
+- Picture-in-picture overlay capabilities
+- Recording and snapshot functionality
+
+#### Network Topology Visualization
+
+- Interactive network map showing discovered devices
+- Signal strength and connection quality indicators
+- Device status monitoring (online/offline/error states)
+- Geographic positioning for outdoor cameras
+
+#### Camera Management Panel
+
+```javascript
+// React component for camera management
+const CameraManagementPanel = () => {
+  const [discoveredCameras, setDiscoveredCameras] = useState([]);
+  const [activeConnections, setActiveConnections] = useState([]);
+  
+  const handleCameraDiscovery = async () => {
+    const scanResults = await api.performNetworkScan();
+    setDiscoveredCameras(scanResults.cameras);
+  };
+  
+  const establishCameraConnection = async (cameraId) => {
+    const connection = await api.connectToCamera(cameraId);
+    if (connection.status === 'success') {
+      setActiveConnections(prev => [...prev, connection]);
+    }
+  };
+  
+  return (
+    <CameraGrid>
+      {activeConnections.map(camera => (
+        <CameraFeed key={camera.id} stream={camera.stream} />
+      ))}
+    </CameraGrid>
+  );
+};
+```
+
+## Advanced Features Implementation
+
+### 1. Intelligent Camera Detection
+
+- **Machine Learning Classification**: Automatically identify camera types and capabilities
+- **Behavioral Analysis**: Detect camera-like network traffic patterns
+- **Vendor Fingerprinting**: Identify manufacturer and model information
+- **Capability Assessment**: Determine supported resolutions, frame rates, and features
+
+### 2. Security and Access Control
+
+```python
+class SecurityLayer:
+    """Comprehensive security implementation"""
+    
+    def __init__(self):
+        self.encryption_handler = EncryptionManager()
+        self.access_control = RoleBasedAccessControl()
+        self.audit_logger = SecurityAuditLogger()
+    
+    def secure_camera_access(self, user_credentials, camera_target):
+        """Implement secure camera access protocols"""
+        if self.access_control.verify_permissions(user_credentials, camera_target):
+            encrypted_session = self.encryption_handler.create_session()
+            self.audit_logger.log_access_attempt(user_credentials, camera_target)
+            return encrypted_session
+        return None
+```
+
+### 3. Data Management and Storage
+
+- **PostgreSQL Integration**: Camera metadata and configuration storage
+- **Stream Recording**: Automated recording capabilities with configurable retention
+- **Event Logging**: Comprehensive audit trail for all system activities
+- **Analytics Database**: Motion detection events and statistical analysis
+
+## Technical Implementation Guidelines
+
+### Network Discovery Optimization
+
+```python
+def optimized_network_scan(ip_range, scan_intensity='moderate'):
+    """
+    Implement efficient network scanning with configurable intensity
+    """
+    scan_configs = {
+        'light': {'threads': 10, 'timeout': 1, 'ports': [80, 554, 8080]},
+        'moderate': {'threads': 50, 'timeout': 3, 'ports': COMMON_CAMERA_PORTS},
+        'intensive': {'threads': 100, 'timeout': 5, 'ports': ALL_KNOWN_PORTS}
+    }
+    
+    config = scan_configs[scan_intensity]
+    return parallel_port_scan(ip_range, config)
+```
+
+### Performance Optimization Strategies
+
+- **Asynchronous Processing**: Non-blocking camera discovery and connection management
+- **Caching Layer**: Redis implementation for frequently accessed camera data
+- **Load Balancing**: Distribute camera streams across multiple backend instances
+- **Resource Management**: Dynamic allocation based on active camera count
+
+### Error Handling and Resilience
+
+```python
+class ResilientCameraHandler:
+    """Implement comprehensive error handling and recovery"""
+    
+    def __init__(self):
+        self.retry_policy = ExponentialBackoffRetry()
+        self.fallback_strategies = FallbackStreamHandler()
+        self.health_monitor = CameraHealthMonitor()
+    
+    async def maintain_camera_connections(self):
+        """Continuous connection health monitoring"""
+        for camera in self.active_cameras:
+            if not self.health_monitor.is_healthy(camera):
+                await self.attempt_reconnection(camera)
+```
+
+## Security and Legal Considerations
+
+### Authorized Usage Framework
+
+- **Network Ownership Verification**: Ensure scanning is performed on owned/authorized networks
+- **Camera Access Permissions**: Implement explicit authorization requirements
+- **Data Privacy Compliance**: GDPR/CCPA compliance for recorded content
+- **Audit Trail Maintenance**: Complete logging of all system activities
+
+### Ethical Implementation Guidelines
+
+```python
+class EthicalComplianceChecker:
+    """Ensure ethical and legal usage compliance"""
+    
+    def validate_scan_authorization(self, network_target):
+        """Verify authorization before network scanning"""
+        return self.check_network_ownership(network_target) and \
+               self.verify_explicit_permission(network_target)
+    
+    def enforce_privacy_protection(self, camera_access):
+        """Implement privacy protection measures"""
+        return self.apply_data_minimization(camera_access) and \
+               self.ensure_consent_compliance(camera_access)
+```
+
+## Deployment and Integration
+
+### Container Architecture (Docker)
+
+```dockerfile
+# Multi-stage build for CCTV Dashboard
+FROM python:3.11-slim as backend
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+COPY . .
+
+FROM node:18-alpine as frontend
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm install
+COPY . .
+RUN npm run build
+```
+
+### Database Schema Design
+
+```sql
+-- PostgreSQL schema for CCTV management
+CREATE TABLE discovered_cameras (
+    id SERIAL PRIMARY KEY,
+    ip_address INET NOT NULL,
+    mac_address VARCHAR(17),
+    manufacturer VARCHAR(100),
+    model VARCHAR(100),
+    capabilities JSONB,
+    discovery_timestamp TIMESTAMP DEFAULT NOW(),
+    last_seen TIMESTAMP DEFAULT NOW()
+);
+
+CREATE TABLE camera_connections (
+    id SERIAL PRIMARY KEY,
+    camera_id INTEGER REFERENCES discovered_cameras(id),
+    connection_status VARCHAR(20),
+    stream_url VARCHAR(255),
+    authentication_method VARCHAR(50),
+    established_at TIMESTAMP DEFAULT NOW()
+);
+```
+
+This comprehensive prompt provides the foundation for developing a sophisticated CCTV Operations Dashboard with active camera discovery capabilities, emphasizing security, performance, and ethical considerations throughout the implementation process.​​​​​​​​​​​​​​​​
