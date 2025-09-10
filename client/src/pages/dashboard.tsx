@@ -5,6 +5,7 @@ import Sidebar from "@/components/sidebar";
 import CameraGrid from "@/components/camera-grid";
 import NetworkDiscovery from "@/components/network-discovery";
 import CameraManagement from "@/components/camera-management";
+import MobileNavigation from "@/components/mobile-navigation";
 import type { Camera, SystemStats, DiscoveredDevice } from "@shared/schema";
 
 export default function Dashboard() {
@@ -27,10 +28,10 @@ export default function Dashboard() {
   return (
     <div className="min-h-screen bg-background">
       <Header systemStats={systemStats} />
-      
+
       <div className="flex h-screen">
         <Sidebar systemStats={systemStats} />
-        
+
         <main className="flex-1 p-6 overflow-auto">
           {/* Control Panel */}
           <div className="mb-6">
@@ -51,7 +52,7 @@ export default function Dashboard() {
                     <option value="4x4">4x4 Grid</option>
                   </select>
                 </div>
-                
+
                 <button 
                   className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-secondary transition-colors"
                   data-testid="button-fullscreen"
@@ -140,7 +141,7 @@ export default function Dashboard() {
                   )}
                 </div>
               </div>
-              
+
               {/* Network Map Visualization */}
               <div>
                 <h4 className="font-medium mb-3">Network Topology</h4>
@@ -154,7 +155,7 @@ export default function Dashboard() {
                       </p>
                     </div>
                   </div>
-                  
+
                   {/* Mock network nodes */}
                   <div className="absolute top-4 left-4 w-3 h-3 bg-primary rounded-full"></div>
                   <div className="absolute top-12 right-8 w-3 h-3 bg-success rounded-full"></div>
@@ -169,6 +170,8 @@ export default function Dashboard() {
           <CameraManagement cameras={cameras} isLoading={camerasLoading} />
         </main>
       </div>
+      {/* Mobile Navigation - Added for mobile-first approach */}
+      <MobileNavigation />
     </div>
   );
 }

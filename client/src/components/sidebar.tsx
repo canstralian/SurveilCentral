@@ -6,47 +6,47 @@ interface SidebarProps {
 
 export default function Sidebar({ systemStats }: SidebarProps) {
   return (
-    <aside className="w-64 sidebar-nav text-primary-foreground p-6">
+    <aside className="w-full md:w-64 sidebar-nav text-primary-foreground p-4 md:p-6">
       <nav className="space-y-2">
         <a 
           href="#" 
-          className="flex items-center space-x-3 p-3 rounded-lg bg-white/10 text-white"
+          className="flex items-center space-x-3 p-4 md:p-3 rounded-lg bg-white/10 text-white min-h-[48px] touch-manipulation"
           data-testid="link-live-monitoring"
         >
-          <i className="fas fa-video w-5"></i>
-          <span>Live Monitoring</span>
+          <i className="fas fa-video w-5 text-lg md:text-base"></i>
+          <span className="text-base md:text-sm">Live Monitoring</span>
         </a>
         <a 
           href="#" 
-          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition-colors"
+          className="flex items-center space-x-3 p-4 md:p-3 rounded-lg hover:bg-white/10 transition-colors min-h-[48px] touch-manipulation"
           data-testid="link-network-discovery"
         >
-          <i className="fas fa-network-wired w-5"></i>
-          <span>Network Discovery</span>
+          <i className="fas fa-network-wired w-5 text-lg md:text-base"></i>
+          <span className="text-base md:text-sm">Network Discovery</span>
         </a>
         <a 
           href="#" 
-          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition-colors"
+          className="flex items-center space-x-3 p-4 md:p-3 rounded-lg hover:bg-white/10 transition-colors min-h-[48px] touch-manipulation"
           data-testid="link-camera-management"
         >
-          <i className="fas fa-cogs w-5"></i>
-          <span>Camera Management</span>
+          <i className="fas fa-cogs w-5 text-lg md:text-base"></i>
+          <span className="text-base md:text-sm">Camera Management</span>
         </a>
         <a 
           href="#" 
-          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition-colors"
+          className="flex items-center space-x-3 p-4 md:p-3 rounded-lg hover:bg-white/10 transition-colors min-h-[48px] touch-manipulation"
           data-testid="link-analytics"
         >
-          <i className="fas fa-chart-line w-5"></i>
-          <span>Analytics</span>
+          <i className="fas fa-chart-line w-5 text-lg md:text-base"></i>
+          <span className="text-base md:text-sm">Analytics</span>
         </a>
         <a 
           href="#" 
-          className="flex items-center space-x-3 p-3 rounded-lg hover:bg-white/10 transition-colors"
+          className="flex items-center space-x-3 p-4 md:p-3 rounded-lg hover:bg-white/10 transition-colors min-h-[48px] touch-manipulation"
           data-testid="link-alerts"
         >
-          <i className="fas fa-exclamation-triangle w-5"></i>
-          <span>Alerts</span>
+          <i className="fas fa-exclamation-triangle w-5 text-lg md:text-base"></i>
+          <span className="text-base md:text-sm">Alerts</span>
         </a>
       </nav>
 
