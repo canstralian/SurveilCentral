@@ -201,6 +201,14 @@ export class MemStorage implements IStorage {
     const camera: Camera = {
       ...insertCamera,
       id,
+      manufacturer: insertCamera.manufacturer || null,
+      model: insertCamera.model || null,
+      location: insertCamera.location || null,
+      streamUrl: insertCamera.streamUrl || null,
+      imageUrl: insertCamera.imageUrl || null,
+      capabilities: insertCamera.capabilities || null,
+      resolution: insertCamera.resolution || null,
+      isRecording: insertCamera.isRecording || null,
       discoveredAt: new Date(),
       lastSeen: new Date()
     };
@@ -238,6 +246,10 @@ export class MemStorage implements IStorage {
     const device: DiscoveredDevice = {
       ...insertDevice,
       id,
+      manufacturer: insertDevice.manufacturer || null,
+      macAddress: insertDevice.macAddress || null,
+      deviceType: insertDevice.deviceType || null,
+      connectionStatus: insertDevice.connectionStatus || null,
       discoveredAt: new Date(),
       lastSeen: new Date()
     };
