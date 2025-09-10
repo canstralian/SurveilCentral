@@ -203,6 +203,7 @@ export class MemStorage implements IStorage {
       id,
       manufacturer: insertCamera.manufacturer || null,
       model: insertCamera.model || null,
+      status: insertCamera.status || "offline",
       location: insertCamera.location || null,
       streamUrl: insertCamera.streamUrl || null,
       imageUrl: insertCamera.imageUrl || null,
