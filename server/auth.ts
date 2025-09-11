@@ -1,7 +1,6 @@
 
 import { Request, Response, NextFunction } from "express";
 import crypto from "crypto";
-import bcrypt from "bcrypt";
 
 // Simple in-memory storage for demo (replace with database in production)
 const users = new Map();
@@ -9,7 +8,7 @@ const sessions = new Map();
 
 // Initialize admin user
 const adminId = "admin-001";
-const adminPasswordHash = await bcrypt.hash("admin123", 10);
+const adminPasswordHash = hashPassword("admin123");
 users.set(adminId, {
   id: adminId,
   username: "admin",
@@ -26,12 +25,16 @@ export interface AuthRequest extends Request {
   session?: any;
 }
 
-export async function hashPassword(password: string): Promise<string> {
-  return bcrypt.hash(password, 10);
+export function hashPassword(password: string): string {
+  const salt = crypto.randomBytes(32).toString('hex');
+  const hash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+  return `${salt}:${hash}`;
 }
 
-export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  return bcrypt.compare(password, hash);
+export function verifyPassword(password: string, storedHash: string): boolean {
+  const [salt, hash] = storedHash.split(':');
+  const computedHash = crypto.pbkdf2Sync(password, salt, 10000, 64, 'sha512').toString('hex');
+  return hash === computedHash;
 }
 
 export function generateSessionToken(): string {

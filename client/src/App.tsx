@@ -6,7 +6,6 @@ import { AuthProvider, useAuth } from "@/contexts/auth-context";
 import LoginForm from "@/components/login-form";
 import Dashboard from "@/pages/dashboard";
 import NotFound from "@/pages/not-found";
-import "./App.css";
 
 const queryClient = new QueryClient();
 
