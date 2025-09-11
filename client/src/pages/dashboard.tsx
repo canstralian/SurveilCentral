@@ -5,6 +5,8 @@ import Sidebar from "@/components/sidebar";
 import CameraGrid from "@/components/camera-grid";
 import NetworkDiscovery from "@/components/network-discovery";
 import CameraManagement from "@/components/camera-management";
+import MobileNavigation from "@/components/mobile-navigation";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import type { Camera, SystemStats, DiscoveredDevice } from "@shared/schema";
 
 export default function Dashboard() {
@@ -25,15 +27,14 @@ export default function Dashboard() {
   const isLoading = camerasLoading || statsLoading || devicesLoading;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/30">
-      <Header systemStats={systemStats} />
+    <SidebarProvider>
+      <div className="min-h-screen bg-background">
+        <Header systemStats={systemStats} />
 
-      <div className="flex min-h-screen">
-        <div className="hidden md:block">
+        <div className="flex h-screen">
           <Sidebar systemStats={systemStats} />
-        </div>
 
-        <main className="flex-1 p-3 md:p-6 overflow-auto">
+          <main className="flex-1 p-3 md:p-6 overflow-auto">
           {/* Control Panel */}
           <div className="mb-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 md:mb-6 gap-3">
@@ -157,6 +158,9 @@ export default function Dashboard() {
           <CameraManagement cameras={cameras} isLoading={camerasLoading} />
         </main>
       </div>
+      {/* Mobile Navigation - Added for mobile-first approach */}
+      <MobileNavigation />
     </div>
+    </SidebarProvider>
   );
 }
